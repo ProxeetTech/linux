@@ -26,6 +26,20 @@
 		#reset-cells = <1>;
 		phy-external-reset-gpios = <&gpio 53 GPIO_ACTIVE_LOW>;
 	};
+
+	chosen {
+		#address-cells = <0x1>;
+		#size-cells = <0x1>;
+		ranges;
+		framebuffer0: framebuffer@A0000000 {
+			compatible = "simple-framebuffer";
+			reg = <0xA0000000 (640 * 480 * 2)>;
+			width = <640>;
+			height = <480>;
+			stride = <(640 * 2)>;
+			format = "r5g6b5";
+		};
+	};
 };
 
 &aes {
