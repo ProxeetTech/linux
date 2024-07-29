@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: GPL-2.0
+obj-$(CONFIG_UIO)	+= uio.o
+obj-$(CONFIG_UIO_CIF)	+= uio_cif.o
+obj-$(CONFIG_UIO_PDRV_GENIRQ)	+= uio_pdrv_genirq.o
+obj-$(CONFIG_UIO_DMEM_GENIRQ)	+= uio_dmem_genirq.o
+obj-$(CONFIG_UIO_AEC)	+= uio_aec.o
+obj-$(CONFIG_UIO_SERCOS3)	+= uio_sercos3.o
+obj-$(CONFIG_UIO_PCI_GENERIC)	+= uio_pci_generic.o
+obj-$(CONFIG_UIO_NETX)	+= uio_netx.o
+obj-$(CONFIG_UIO_PRUSS)         += uio_pruss.o
+obj-$(CONFIG_UIO_MF624)         += uio_mf624.o
+obj-$(CONFIG_UIO_FSL_ELBC_GPCM)	+= uio_fsl_elbc_gpcm.o
+obj-$(CONFIG_UIO_HV_GENERIC)	+= uio_hv_generic.o
+obj-$(CONFIG_UIO_DFL)	+= uio_dfl.o
+obj-$(CONFIG_UIO_SPARX5)	+= uio_sparx5.o
+obj-$(CONFIG_UIO_SPARX5_IRQMUX) += uio_sparx5_irqmux.o
+obj-$(CONFIG_UIO_MIPS_MSCC)	+= uio_vcfw.o
