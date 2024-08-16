@@ -4,3 +4,5 @@
 obj-$(CONFIG_PSE_CONTROLLER) += pse_core.o
 
 obj-$(CONFIG_PSE_REGULATOR) += pse_regulator.o
+
+obj-$(CONFIG_PSE_MAX5980) += max5980.o

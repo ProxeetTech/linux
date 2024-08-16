@@ -20,4 +20,10 @@ config PSE_REGULATOR
 	  Sourcing Equipment without automatic classification support. For
 	  example for basic implementation of PoDL (802.3bu) specification.
 
+config PSE_MAX5980
+	tristate "MAX5980 PSE controller"
+	depends on REGULATOR
+	help
+	  This module provides support for MAX5980 PSE regulator.
+
 endif
