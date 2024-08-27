@@ -2097,7 +2097,7 @@ static int sparx5_sd25g28_config(struct sparx5_serdes_macro *macro, bool reset)
 	struct sparx5_sd25g28_mode_preset mode;
 	struct sparx5_sd25g28_args args = {
 		.rxinvert = 1,
-		.txinvert = 0,
+		.txinvert = 1,
 		.txswing = 240,
 		.com_pll_reserve = 0xf,
 		.reg_rst = reset,
