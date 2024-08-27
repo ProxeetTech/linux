@@ -2120,7 +2120,7 @@ static int sparx5_sd10g28_config(struct sparx5_serdes_macro *macro, bool reset)
 	struct sparx5_sd10g28_params params;
 	struct sparx5_sd10g28_args args = {
 		.is_6g = (macro->serdestype == SPX5_SDT_6G),
-		.txinvert = 0,
+		.txinvert = 1,
 		.rxinvert = 1,
 		.txswing = 240,
 		.reg_rst = reset,
