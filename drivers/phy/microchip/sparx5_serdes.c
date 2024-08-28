@@ -1527,6 +1527,7 @@ static int sparx5_sd25g28_apply_params(struct sparx5_serdes_macro *macro,
 		 SD25G_LANE_LANE_40_LN_R_RX_POL_INV,
 		 priv,
 		 SD25G_LANE_LANE_40(sd_index));
+	printk("2.5G: Rx inv flag: %d, Tx inv flag: %d\n", params->r_rx_pol_inv, params->r_tx_pol_inv);
 
 	sdx5_rmw(SD25G_LANE_LANE_04_LN_CFG_RX2TX_LP_EN_SET(params->cfg_rx2tx_lp_en) |
 		 SD25G_LANE_LANE_04_LN_CFG_TX2RX_LP_EN_SET(params->cfg_tx2rx_lp_en),
@@ -2022,6 +2023,9 @@ static int sparx5_sd10g28_apply_params(struct sparx5_serdes_macro *macro,
 		      SD10G_LANE_LANE_83_R_RX_POL_INV,
 		      sd_inst,
 		      SD10G_LANE_LANE_83(sd_index));
+	printk("10G: Rx inv flag: %d, Tx inv flag: %d, SD INDEX: %d, lane_index: %d\n",
+	       params->r_rx_pol_inv, params->r_tx_pol_inv, sd_index, lane_index);
+
 
 	sdx5_inst_rmw(SD10G_LANE_LANE_06_CFG_RX2TX_LP_EN_SET
 		      (params->cfg_rx2tx_lp_en) |
