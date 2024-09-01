@@ -1527,6 +1527,8 @@ static int sparx5_sd25g28_apply_params(struct sparx5_serdes_macro *macro,
 		 SD25G_LANE_LANE_40_LN_R_RX_POL_INV,
 		 priv,
 		 SD25G_LANE_LANE_40(sd_index));
+	printk("2.5G: SD %d, tx_pol_inv: %d, rx_pol_inv: %d\n",
+	       sd_index, params->r_tx_pol_inv, params->r_rx_pol_inv);
 
 	sdx5_rmw(SD25G_LANE_LANE_04_LN_CFG_RX2TX_LP_EN_SET(params->cfg_rx2tx_lp_en) |
 		 SD25G_LANE_LANE_04_LN_CFG_TX2RX_LP_EN_SET(params->cfg_tx2rx_lp_en),
@@ -2014,6 +2016,11 @@ static int sparx5_sd10g28_apply_params(struct sparx5_serdes_macro *macro,
 		      sd_inst,
 		      SD10G_LANE_LANE_0B(sd_index));
 
+	//FIXME!!! Fast workaroung for handling HW error
+	if (sd_index > 3) {
+		params->r_tx_pol_inv = 0;
+	}
+
 	sdx5_inst_rmw(SD10G_LANE_LANE_83_R_TX_POL_INV_SET
 		      (params->r_tx_pol_inv) |
 		      SD10G_LANE_LANE_83_R_RX_POL_INV_SET
@@ -2022,6 +2029,8 @@ static int sparx5_sd10g28_apply_params(struct sparx5_serdes_macro *macro,
 		      SD10G_LANE_LANE_83_R_RX_POL_INV,
 		      sd_inst,
 		      SD10G_LANE_LANE_83(sd_index));
+	printk("10G: SD %d, tx_pol_inv: %d, rx_pol_inv: %d, phys_addr: 0x%llX\n",
+	       sd_index, params->r_tx_pol_inv, params->r_rx_pol_inv, priv->data->iomap->offset);
 
 	sdx5_inst_rmw(SD10G_LANE_LANE_06_CFG_RX2TX_LP_EN_SET
 		      (params->cfg_rx2tx_lp_en) |

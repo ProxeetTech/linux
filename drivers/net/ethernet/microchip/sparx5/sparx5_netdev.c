@@ -299,7 +299,7 @@ bool sparx5_netdevice_check(const struct net_device *dev)
 	return dev && (dev->netdev_ops == &sparx5_port_netdev_ops);
 }
 
-struct net_device *sparx5_create_netdev(struct sparx5 *sparx5, u32 portno)
+struct net_device *sparx5_create_netdev(struct sparx5 *sparx5, u32 portno, const char *portname)
 {
 	struct sparx5_port *spx5_port;
 	struct net_device *ndev;
@@ -317,7 +317,13 @@ struct net_device *sparx5_create_netdev(struct sparx5 *sparx5, u32 portno)
 	spx5_port->ndev = ndev;
 	spx5_port->sparx5 = sparx5;
 	spx5_port->portno = portno;
-	snprintf(ndev->name, IFNAMSIZ, "eth%d", portno);
+
+	if (portname != NULL) {
+		snprintf(ndev->name, IFNAMSIZ, "%s", portname);
+	} else {
+		snprintf(ndev->name, IFNAMSIZ, "eth%d", portno);
+	}
+
 
 	ndev->netdev_ops = &sparx5_port_netdev_ops;
 	ndev->ethtool_ops = &sparx5_ethtool_ops;
