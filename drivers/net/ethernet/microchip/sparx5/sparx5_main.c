@@ -42,6 +42,7 @@ struct initial_port_config {
 	struct device_node *node;
 	struct sparx5_port_config conf;
 	struct phy *serdes;
+	const char *port_name;
 };
 
 struct sparx5_ram_config {
@@ -294,7 +295,7 @@ static int sparx5_create_port(struct sparx5 *sparx5,
 	struct phylink *phylink;
 	int err;
 
-	ndev = sparx5_create_netdev(sparx5, config->portno);
+	ndev = sparx5_create_netdev(sparx5, config->portno, config->port_name);
 	if (IS_ERR(ndev)) {
 		dev_err(sparx5->dev, "Could not create net device: %02u\n",
 			config->portno);
@@ -859,6 +860,7 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
 		struct sparx5_port_config *conf;
 		struct phy *serdes;
 		u32 portno;
+		const char *port_name = NULL;
 
 		err = of_property_read_u32(portnp, "reg", &portno);
 		if (err) {
@@ -869,6 +871,13 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
 		conf = &config->conf;
 		conf->speed = SPEED_UNKNOWN;
 		conf->bandwidth = SPEED_UNKNOWN;
+
+		err = of_property_read_string(portnp, "port-name", &port_name);
+		if (err) {
+			dev_err(sparx5->dev, "port %u: missing port-name\n",
+				portno);
+		}
+
 		err = of_get_phy_mode(portnp, &conf->phy_mode);
 		if (err) {
 			dev_err(sparx5->dev, "port %u: missing phy-mode\n",
@@ -899,6 +908,7 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
 		config->portno = portno;
 		config->node = portnp;
 		config->serdes = serdes;
+		config->port_name = port_name;
 
 		conf->media = PHY_MEDIA_DAC;
 		conf->serdes_reset = true;

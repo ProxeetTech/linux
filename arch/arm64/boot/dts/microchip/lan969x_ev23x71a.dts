@@ -29,7 +29,7 @@
 		compatible = "i2c-mux-gpio";
 		#address-cells = <1>;
 		#size-cells = <0>;
-		i2c-parent = <&i2c3>;
+		i2c-parent = <&i2c1>;
 
 		mux-gpios = <&sgpio_out 0 1 GPIO_ACTIVE_HIGH
 			     &sgpio_out 0 2 GPIO_ACTIVE_HIGH
@@ -71,30 +71,6 @@
 			gpios = <&sgpio_out 7 1 GPIO_ACTIVE_LOW>;
 			default-state = "off";
 		};
-
-		led-s8-green {
-			label = "s8:green";
-			gpios = <&sgpio_out 8 0 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-
-		led-s8-yellow {
-			label = "s8:yellow";
-			gpios = <&sgpio_out 8 1 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-
-		led-s9-green {
-			label = "s9:green";
-			gpios = <&sgpio_out 9 0 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-
-		led-s9-yellow {
-			label = "s9:yellow";
-			gpios = <&sgpio_out 9 1 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
 	};
 
 	sfp0: sfp0 {
@@ -127,12 +103,29 @@
 	};
 };
 
+/*
 &flx3 {
 	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
 	status = "okay";
 
 	i2c3: i2c@600 {
 		pinctrl-0 = <&fc3_pins>;
+		pinctrl-names = "default";
+		i2c-analog-filter;
+		i2c-digital-filter;
+		i2c-digital-filter-width-ns = <35>;
+		i2c-sda-hold-time-ns = <1500>;
+		status = "okay";
+	};
+};
+*/
+
+&flx1 {
+	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
+	status = "okay";
+
+	i2c1: i2c@600 {
+		pinctrl-0 = <&fc1_pins>;
 		pinctrl-names = "default";
 		i2c-analog-filter;
 		i2c-digital-filter;
@@ -160,9 +153,14 @@
 		pins = "GPIO_3", "GPIO_4";
 		function = "fc";
 	};
-
+/*
 	fc3_pins: fc3-pins {
 		pins = "GPIO_55", "GPIO_56";
+		function = "fc";
+	};
+*/
+	fc1_pins: fc1-pins {
+		pins = "GPIO_28", "GPIO_29";
 		function = "fc";
 	};
 
@@ -216,97 +214,97 @@
 	reset-gpios = <&gpio 62 GPIO_ACTIVE_LOW>;
 	status = "okay";
 
-	phy00: phy@0 {
+	phy7: phy@7 {
 		reg = <7>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy01: phy@1 {
+	phy8: phy@8 {
 		reg = <8>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy02: phy@2 {
+	phy9: phy@9 {
 		reg = <9>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy03: phy@3 {
+	phy10: phy@10 {
 		reg = <10>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy10: phy@4 {
+	phy15: phy@15 {
 		reg = <15>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy11: phy@5 {
+	phy16: phy@16 {
 		reg = <16>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy12: phy@6 {
+	phy17: phy@17 {
 		reg = <17>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy13: phy@7 {
+	phy18: phy@18 {
 		reg = <18>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy20: phy@8 {
+	phy23: phy@23 {
 		reg = <23>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy21: phy@9 {
+	phy24: phy@24 {
 		reg = <24>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy22: phy@10 {
+	phy25: phy@25 {
 		reg = <25>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy23: phy@11 {
+	phy26: phy@26 {
 		reg = <26>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy30: phy@12 {
+	phy28: phy@28 {
 		reg = <28>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy31: phy@13 {
+	phy29: phy@29 {
 		reg = <29>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy32: phy@14 {
+	phy30: phy@30 {
 		reg = <30>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
 	};
 
-	phy33: phy@15 {
+	phy31: phy@31 {
 		reg = <31>;
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-parent = <&gpio>;
@@ -367,135 +365,151 @@
 		port0: port@0 {
 			reg = <0>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy00>;
+			phy-handle = <&phy7>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 1>;
+			/* port-name = "eth14"; */
+			phys = <&serdes 0>;
 		};
 
 		port1: port@1 {
 			reg = <1>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy01>;
+			phy-handle = <&phy8>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 1>;
+			/* port-name = "eth13"; */
+			phys = <&serdes 0>;
 		};
 
 		port2: port@2 {
 			reg = <2>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy02>;
+			phy-handle = <&phy9>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 1>;
+			/* port-name = "eth16"; */
+			phys = <&serdes 0>;
 		};
 
 		port3: port@3 {
 			reg = <3>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy03>;
+			phy-handle = <&phy10>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 1>;
+			/* port-name = "eth15"; */
+			phys = <&serdes 0>;
 		};
 
 		port4: port@4 {
 			reg = <4>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy10>;
+			phy-handle = <&phy15>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 0>;
+			/* port-name = "eth10"; */
+			phys = <&serdes 1>;
 		};
 
 		port5: port@5 {
 			reg = <5>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy11>;
+			phy-handle = <&phy16>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 0>;
+			/* port-name = "eth9"; */
+			phys = <&serdes 1>;
 		};
 
 		port6: port@6 {
 			reg = <6>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy12>;
+			phy-handle = <&phy17>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 0>;
+			/* port-name = "eth12"; */
+			phys = <&serdes 1>;
 		};
 
 		port7: port@7 {
 			reg = <7>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy13>;
+			phy-handle = <&phy18>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 0>;
+			/* port-name = "eth11"; */
+			phys = <&serdes 1>;
 		};
 
 		port8: port@8 {
 			reg = <8>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy20>;
+			phy-handle = <&phy23>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 3>;
+			/* port-name = "eth6"; */
+			phys = <&serdes 2>;
 		};
 
 		port9: port@9 {
 			reg = <9>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy21>;
+			phy-handle = <&phy24>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 3>;
+			/* port-name = "eth5"; */
+			phys = <&serdes 2>;
 		};
 
 		port10: port@10 {
 			reg = <10>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy22>;
+			phy-handle = <&phy25>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 3>;
+			/* port-name = "eth8"; */
+			phys = <&serdes 2>;
 		};
 
 		port11: port@11 {
 			reg = <11>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy23>;
+			phy-handle = <&phy26>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 3>;
+			/* port-name = "eth7"; */
+			phys = <&serdes 2>;
 		};
 
 		port12: port@12 {
 			reg = <12>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy30>;
+			phy-handle = <&phy28>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 2>;
+			/* port-name = "eth2"; */
+			phys = <&serdes 3>;
 		};
 
 		port13: port@13 {
 			reg = <13>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy31>;
+			phy-handle = <&phy29>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 2>;
+			/* port-name = "eth1"; */
+			phys = <&serdes 3>;
 		};
 
 		port14: port@14 {
 			reg = <14>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy32>;
+			phy-handle = <&phy30>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 2>;
+			/* port-name = "eth4"; */
+			phys = <&serdes 3>;
 		};
 
 		port15: port@15 {
 			reg = <15>;
 			microchip,bandwidth = <1000>;
-			phy-handle = <&phy33>;
+			phy-handle = <&phy31>;
 			phy-mode = "qsgmii";
-			phys = <&serdes 2>;
+			/* port-name = "eth3"; */
+			phys = <&serdes 3>;
 		};
 
 		port16: port@16 {
-			reg = <16>;
+			reg = <17>;
 			microchip,bandwidth = <10000>;
-			phys = <&serdes 6>;
+			phys = <&serdes 7>;
 			phy-mode = "10gbase-r";
 			sfp = <&sfp0>;
 			microchip,sd-sgpio = <365>;
@@ -503,9 +517,9 @@
 		};
 
 		port17: port@17 {
-			reg = <17>;
+			reg = <16>;
 			microchip,bandwidth = <10000>;
-			phys = <&serdes 7>;
+			phys = <&serdes 6>;
 			phy-mode = "10gbase-r";
 			sfp = <&sfp1>;
 			microchip,sd-sgpio = <369>;
