@@ -931,8 +931,10 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
 		return dev_err_probe(dev, PTR_ERR(clk), "Failed to get clock\n");
 
 	div_clock = clk_get_rate(clk);
-	if (device_property_read_u32(dev, "bus-frequency", &priv->clock))
-		priv->clock = 12500000;
+	if (device_property_read_u32(dev, "bus-frequency", &priv->clock)) {
+		priv->clock = 5000000;
+	}
+
 	if (priv->clock == 0 || priv->clock > (div_clock / 2)) {
 		dev_err(dev, "Invalid frequency %d\n", priv->clock);
 		return -EINVAL;
