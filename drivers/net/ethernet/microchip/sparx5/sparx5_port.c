@@ -1065,13 +1065,13 @@ int sparx5_port_config(struct sparx5 *sparx5,
 		       struct sparx5_port *port,
 		       struct sparx5_port_config *conf)
 {
-	printk("sparx5_port_config() ----> Port: %d, Phy id: %d\n",
-	       port->portno, port->serdes->id);
-
 	bool rgmii = phy_interface_mode_is_rgmii(conf->phy_mode);
 	bool high_speed_dev = sparx5_is_baser(conf->portmode);
 	const struct sparx5_ops *ops = &sparx5->data->ops;
 	int err, urgency, stop_wm;
+
+	printk("sparx5_port_config() ----> Port: %d, Phy id: %d\n",
+		port->portno, port->serdes->id);
 
 	err = sparx5_port_verify_speed(sparx5, port, conf);
 	if (err)
