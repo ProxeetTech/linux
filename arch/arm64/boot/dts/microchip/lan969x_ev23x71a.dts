@@ -507,22 +507,22 @@
 		};
 
 		port16: port@16 {
-			reg = <17>;
-			microchip,bandwidth = <10000>;
-			phys = <&serdes 7>;
-			phy-mode = "10gbase-r";
-			sfp = <&sfp0>;
-			microchip,sd-sgpio = <365>;
-			managed = "in-band-status";
-		};
-
-		port17: port@17 {
 			reg = <16>;
 			microchip,bandwidth = <10000>;
 			phys = <&serdes 6>;
 			phy-mode = "10gbase-r";
 			sfp = <&sfp1>;
 			microchip,sd-sgpio = <369>;
+			managed = "in-band-status";
+		};
+
+		port17: port@17 {
+			reg = <17>;
+			microchip,bandwidth = <10000>;
+			phys = <&serdes 7>;
+			phy-mode = "10gbase-r";
+			sfp = <&sfp0>;
+			microchip,sd-sgpio = <365>;
 			managed = "in-band-status";
 		};
 	};
