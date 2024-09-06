@@ -367,7 +367,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy7>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth14"; */
+			port-name = "eth14";
 			phys = <&serdes 0>;
 		};
 
@@ -376,7 +376,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy8>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth13"; */
+			port-name = "eth13";
 			phys = <&serdes 0>;
 		};
 
@@ -385,7 +385,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy9>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth16"; */
+			port-name = "eth16";
 			phys = <&serdes 0>;
 		};
 
@@ -394,7 +394,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy10>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth15"; */
+			port-name = "eth15";
 			phys = <&serdes 0>;
 		};
 
@@ -403,7 +403,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy15>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth10"; */
+			port-name = "eth10";
 			phys = <&serdes 1>;
 		};
 
@@ -412,7 +412,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy16>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth9"; */
+			port-name = "eth9";
 			phys = <&serdes 1>;
 		};
 
@@ -421,7 +421,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy17>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth12"; */
+			port-name = "eth12";
 			phys = <&serdes 1>;
 		};
 
@@ -430,7 +430,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy18>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth11"; */
+			port-name = "eth11";
 			phys = <&serdes 1>;
 		};
 
@@ -439,7 +439,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy23>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth6"; */
+			port-name = "eth6";
 			phys = <&serdes 2>;
 		};
 
@@ -448,7 +448,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy24>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth5"; */
+			port-name = "eth5";
 			phys = <&serdes 2>;
 		};
 
@@ -457,7 +457,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy25>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth8"; */
+			port-name = "eth8";
 			phys = <&serdes 2>;
 		};
 
@@ -466,7 +466,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy26>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth7"; */
+			port-name = "eth7";
 			phys = <&serdes 2>;
 		};
 
@@ -475,7 +475,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy28>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth2"; */
+			port-name = "eth2";
 			phys = <&serdes 3>;
 		};
 
@@ -484,7 +484,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy29>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth1"; */
+			port-name = "eth1";
 			phys = <&serdes 3>;
 		};
 
@@ -493,7 +493,7 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy30>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth4"; */
+			port-name = "eth4";
 			phys = <&serdes 3>;
 		};
 
@@ -502,27 +502,29 @@
 			microchip,bandwidth = <1000>;
 			phy-handle = <&phy31>;
 			phy-mode = "qsgmii";
-			/* port-name = "eth3"; */
+			port-name = "eth3";
 			phys = <&serdes 3>;
 		};
 
 		port16: port@16 {
 			reg = <16>;
 			microchip,bandwidth = <10000>;
-			phys = <&serdes 6>;
+			phys = <&serdes 7>;
 			phy-mode = "10gbase-r";
-			sfp = <&sfp1>;
-			microchip,sd-sgpio = <369>;
+			port-name = "sfp0";
+			sfp = <&sfp0>;
+			microchip,sd-sgpio = <365>;
 			managed = "in-band-status";
 		};
 
 		port17: port@17 {
 			reg = <17>;
 			microchip,bandwidth = <10000>;
-			phys = <&serdes 7>;
+			phys = <&serdes 6>;
 			phy-mode = "10gbase-r";
-			sfp = <&sfp0>;
-			microchip,sd-sgpio = <365>;
+			port-name = "sfp1";
+			sfp = <&sfp1>;
+			microchip,sd-sgpio = <369>;
 			managed = "in-band-status";
 		};
 	};
@@ -530,6 +532,6 @@
 
 &usb0 {
 	status = "okay";
-	pinctrl-0 = <&usb_ulpi_pins>, <&usb_rst_pins>, <&usb_over_pins>, <&usb_power_pins>;
+	pinctrl-0 = <&usb_ulpi_pins>, <&usb_rst_pins>;
 	pinctrl-names = "default";
 };
