@@ -1992,6 +1992,9 @@ static __always_inline int ksz886x_cable_test_fault_length(struct phy_device *ph
 	 * (DELTA_TIME - 22) * 0.8 for lan8814 phy.
 	 */
 	dt = FIELD_GET(data_mask, status);
+	if (dt < 22) {
+		dt = 22;
+	}
 
 	if ((phydev->phy_id & MICREL_PHY_ID_MASK) == PHY_ID_LAN8814)
 		return ((dt - 22) * 800) / 10;
@@ -2124,9 +2127,19 @@ static int ksz886x_cable_test_get_status(struct phy_device *phydev,
 	const struct kszphy_type *type = phydev->drv->driver_data;
 	unsigned long pair_mask = type->pair_mask;
 	int retries = 20;
-	int pair, ret;
+	int pair = 0;
+	int ret = 0;
 
 	*finished = false;
+
+	/* Fake run cable test as the workaround to escape wrong first measurement */
+	int val;
+
+	val = KSZ8081_LMD_ENABLE_TEST;
+	val = val | (pair << LAN8814_PAIR_BIT_SHIFT);
+
+	phy_write(phydev, LAN8814_CABLE_DIAG, val);
+	ksz886x_cable_test_wait_for_completion(phydev);
 
 	/* Try harder if link partner is active */
 	while (pair_mask && retries--) {
