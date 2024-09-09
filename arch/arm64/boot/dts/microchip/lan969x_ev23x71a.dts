@@ -358,6 +358,8 @@
 
 &switch {
 	status = "okay";
+	mac-address = [ 08 00 3B 00 00 00 ];
+
 	ethernet-ports {
 		#address-cells = <1>;
 		#size-cells = <0>;
