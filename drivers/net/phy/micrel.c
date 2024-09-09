@@ -2129,12 +2129,11 @@ static int ksz886x_cable_test_get_status(struct phy_device *phydev,
 	int retries = 20;
 	int pair = 0;
 	int ret = 0;
+	int val;
 
 	*finished = false;
 
 	/* Fake run cable test as the workaround to escape wrong first measurement */
-	int val;
-
 	val = KSZ8081_LMD_ENABLE_TEST;
 	val = val | (pair << LAN8814_PAIR_BIT_SHIFT);
 
