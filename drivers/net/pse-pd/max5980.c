@@ -342,6 +342,7 @@ static int max5980_of_probe(struct device *dev,
 		return -EINVAL;
 	
 	of_property_read_u32(np, "irq-gpio", &pdata->irq);
+	dev_info(dev, "irq-gpio: %d", pdata->irq);
 	i = 0;
 	for_each_child_of_node(np, child) {
 		of_property_read_u32(child, "enable", &pdata->pt_df[i].enable);
@@ -391,18 +392,23 @@ static int max5980_probe(struct i2c_client *client, const struct i2c_device_id *
 			max5980_read_reg(ddata, MAX5980_FW_REG));
 
 	max5980_irq_enable(ddata, MAX5980_SUP_INT | MAX5980_TST_INT | MAX5980_TCUT_INT | MAX5980_CLS_INT | MAX5980_DET_INT);
-	res = request_threaded_irq(gpio_to_irq(pdata->irq), NULL,
-			max5980_irq_handler,
-			IRQF_TRIGGER_FALLING|IRQF_ONESHOT,
-			"max5980", ddata);
-	if (res) {
-		dev_err(dev, "failed to register interrupt\n");
-		sysfs_remove_group(&client->dev.kobj, &max5980_attr_group);
-		devm_kfree(&client->dev, ddata);
-		return res;
+	dev_info(dev, "irq: %d", pdata->irq);
+	if (pdata->irq > 0) {
+		res = request_threaded_irq(gpio_to_irq(pdata->irq), NULL,
+				max5980_irq_handler,
+				IRQF_TRIGGER_FALLING|IRQF_ONESHOT,
+				"max5980", ddata);
+		if (res) {
+			dev_err(dev, "failed to register interrupt\n");
+			sysfs_remove_group(&client->dev.kobj, &max5980_attr_group);
+			devm_kfree(&client->dev, ddata);
+			return res;
+		}
+		max5980_irq_clear(ddata);
+		max5980_irq_handler(gpio_to_irq(pdata->irq), ddata);
+	} else {
+		dev_info(dev, "There is no irq gpio");
 	}
-	max5980_irq_clear(ddata);
-	max5980_irq_handler(gpio_to_irq(pdata->irq), ddata);
 	return 0;
 }
 

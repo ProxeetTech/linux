@@ -43,6 +43,30 @@
 		i2c_sfp1: i2c-sfp1 {
 			reg = <0x1>;
 		};
+
+		i2c_2: i2c_2 {
+			reg = <0x2>;
+		};
+
+		i2c_3: i2c_3 {
+			reg = <0x3>;
+		};
+
+		i2c_4: i2c_4 {
+			reg = <0x4>;
+		};
+
+		i2c_5: i2c_5 {
+			reg = <0x5>;
+		};
+
+		i2c_6: i2c_6 {
+			reg = <0x6>;
+		};
+
+		i2c_poe: i2c_poe {
+			reg = <0x7>;
+		};
 	};
 
 	leds {
@@ -89,6 +113,67 @@
 		los-gpios = <&sgpio_in 7 0 GPIO_ACTIVE_HIGH>;
 		mod-def0-gpios = <&sgpio_in 7 1 GPIO_ACTIVE_LOW>;
 		tx-fault-gpios = <&sgpio_in 7 2 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+&i2c_poe {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	poe0: max5980@2C {
+        compatible = "maxim,max5980";
+        reg = <0x2C>;
+
+        port0@0 {
+                enable = <1>;
+                mode = "auto";
+                power = <1>;
+				name-ref = <&switch 0>
+        };
+        port1@1 {
+                enable = <1>;
+                mode = "auto";
+                power = <1>;
+				name-ref = <&switch 1>
+        };
+        port2@2 {
+                enable = <1>;
+                mode = "auto";
+                power = <1>;
+				name-ref = <&switch 2>
+        };
+        port3@3 {
+                enable = <1>;
+                mode = "auto";
+                power = <1>;
+				name-ref = <&switch 3>
+        };
+	};
+
+	poe1: max5980@C {
+        compatible = "maxim,max5980";
+        reg = <0x0C>;
+
+        port0@0 {
+                enable = <1>;
+                mode = "auto";
+                power = <1>;
+        };
+        port1@1 {
+                enable = <1>;
+                mode = "auto";
+                power = <1>;
+        };
+        port2@2 {
+                enable = <1>;
+                mode = "auto";
+                power = <1>;
+        };
+        port3@3 {
+                enable = <1>;
+                mode = "auto";
+                power = <1>;
+        };
 	};
 };
 
