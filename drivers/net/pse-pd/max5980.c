@@ -261,10 +261,16 @@ static ssize_t max5980_show_pt_info(struct device *dev,
 	unsigned long val = 0;
 	struct max5980_data *ddata = dev_get_drvdata(dev);
 	max5980_read(ddata, MAX5980_DC_REGS, MAX5980_DC_INFO_SZ, ddata->pt_dc);
-	len = sprintf(buf, "# mode voltage current\n"); /* column names */
+	len = sprintf(buf, "# name mode voltage current\n"); /* column names */
 	for (i = 0; i < MAX5980_PORTS_NUM; i++) {
 		/* Port number */
 		len += sprintf(buf+len, "%d ", i);
+		/* Port name*/
+		if (0 == ddata->pdata.pt_df[i].name) {
+			len += sprintf(buf+len, "* ");
+		} else {
+			len += sprintf(buf+len, "%s ", ddata->pdata.pt_df[i].name);
+		}
 		/* Port mode of operation */
 		val = max5980_get_pt_mode(dev, i);
 		if (val == MAX5980_OPER_MODE_SHUTDOWN)
@@ -330,10 +336,12 @@ static const struct of_device_id max5980_dt_id[] = {
 
 static int max5980_of_probe(struct device *dev,
 		struct max5980_platform_data *pdata) {
-	int i;
+	int i, ret;
 	const char *pmode;
 	struct device_node *np = dev->of_node;
 	struct device_node *child;
+	struct of_phandle_args out_args;
+	struct device_node *ports, *portnp;
 
 	if (!of_match_device(max5980_dt_id, dev))
 		return -ENODEV;
@@ -358,6 +366,49 @@ static int max5980_of_probe(struct device *dev,
 				pdata->pt_df[i].mode = MAX5980_OPER_MODE_SHUTDOWN;
 		}
 		of_property_read_u32(child, "power", &pdata->pt_df[i].pwr);
+
+		ret = of_parse_phandle_with_fixed_args(child, "name-ref", 1, 0, &out_args);
+
+		if (ret >= 0) {
+			if (out_args.args_count != 1) {
+				of_node_put(out_args.np);
+				dev_err(dev, "out_args.args_count: %d", out_args.args_count);
+				return -EINVAL;
+			}
+
+			dev_info(dev, "arg: %d", out_args.args[0]);
+
+			ports = of_get_child_by_name(out_args.np, "ethernet-ports");
+			if (!ports) {
+				dev_err(dev, "no ethernet-ports child node found\n");
+				return -ENODEV;
+			}
+
+			for_each_available_child_of_node(ports, portnp) {
+				u32 portno;
+				const char *port_name = NULL;
+
+				ret = of_property_read_u32(portnp, "reg", &portno);
+				if (ret) {
+					dev_err(dev, "port reg property error\n");
+					continue;
+				}
+
+				ret = of_property_read_string(portnp, "port-name", &port_name);
+				if (ret) {
+					dev_err(dev, "port %u: missing port-name\n",
+						portno);
+				}
+
+				if (out_args.args[0] == portno) {
+					pdata->pt_df[i].name = port_name;
+				}
+			}
+			of_node_put(ports);
+			of_node_put(out_args.np);
+		} else {
+			dev_info(dev, "of_parse_phandle_with_fixed_args: %d", ret);
+		}
 		i++;
 	}
 	return 0;

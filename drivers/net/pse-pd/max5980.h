@@ -314,6 +314,7 @@ struct pt_dflt {
 	int enable;
 	int mode;
 	int pwr;
+	const char *name;
 };
 
 struct max5980_platform_data {

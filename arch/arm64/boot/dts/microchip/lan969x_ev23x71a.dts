@@ -128,25 +128,25 @@
                 enable = <1>;
                 mode = "auto";
                 power = <1>;
-				name-ref = <&switch 0>
+				name-ref = <&switch 0>;
         };
         port1@1 {
                 enable = <1>;
                 mode = "auto";
                 power = <1>;
-				name-ref = <&switch 1>
+				name-ref = <&switch 1>;
         };
         port2@2 {
                 enable = <1>;
                 mode = "auto";
                 power = <1>;
-				name-ref = <&switch 2>
+				name-ref = <&switch 2>;
         };
         port3@3 {
                 enable = <1>;
                 mode = "auto";
                 power = <1>;
-				name-ref = <&switch 3>
+				name-ref = <&switch 3>;
         };
 	};
 
