@@ -342,7 +342,7 @@ static ssize_t max5980_show_status(struct device *dev,
 	u8 val[4];
 	int tmp;
 	max5980_read(ddata, MAX5980_PORT1_STATUS_REG, 4, &val);
-	len = sprintf(buf, "# name class det_st\n"); /* column names */
+	len = sprintf(buf, "# name det_st class\n"); /* column names */
 	for (i = 0; i < MAX5980_PORTS_NUM; i++) {
 		/* Port number */
 		len += sprintf(buf+len, "%d ", i);
