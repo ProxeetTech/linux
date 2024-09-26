@@ -326,6 +326,7 @@ struct max5980_data {
 	struct i2c_client *client;
 	struct max5980_platform_data pdata;
 	struct pt_dc_parm pt_dc[MAX5980_PORTS_NUM];
+	int reg;
 };
 
 #endif /* __MAX5980_H__ */

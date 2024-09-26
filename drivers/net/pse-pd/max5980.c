@@ -303,20 +303,116 @@ static ssize_t max5980_show_pt_info(struct device *dev,
 	return len;
 }
 
+static ssize_t max5980_show_reg(struct device *dev,
+		struct device_attribute *attr, char *buf) {
+	int len;
+	struct max5980_data *ddata = dev_get_drvdata(dev);
+	u8 val;
+	val = max5980_read_reg(ddata, ddata->reg);
+	len = sprintf(buf, "Reg: 0x%X, Val: 0x%X\n", ddata->reg, val);
+	return len;
+}
+
+static ssize_t max5980_store_reg(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count) {
+	int res;
+	long reg, val;
+	struct max5980_data *ddata = dev_get_drvdata(dev);
+
+	res = kstrtol(buf, 16, &reg);
+	if (res != 0) {
+		if( 2 == sscanf(buf, "%lX %lX", &reg, &val)) {
+			dev_info(dev, "Write: 0x%X to 0x%X", (unsigned)val, (unsigned)reg);
+			max5980_write_reg(ddata, reg, val);
+		} else {
+			return res;
+		}
+	} else {
+		ddata->reg = reg;
+		dev_info(dev, "Store reg num: 0x%X", (int)reg);
+	}
+	return count;
+}
+
+static ssize_t max5980_show_status(struct device *dev,
+		struct device_attribute *attr, char *buf) {
+				int i;
+	int len;
+	struct max5980_data *ddata = dev_get_drvdata(dev);
+	u8 val[4];
+	int tmp;
+	max5980_read(ddata, MAX5980_PORT1_STATUS_REG, 4, &val);
+	len = sprintf(buf, "# name class det_st\n"); /* column names */
+	for (i = 0; i < MAX5980_PORTS_NUM; i++) {
+		/* Port number */
+		len += sprintf(buf+len, "%d ", i);
+		/* Port name*/
+		if (0 == ddata->pdata.pt_df[i].name) {
+			len += sprintf(buf+len, "* ");
+		} else {
+			len += sprintf(buf+len, "%s ", ddata->pdata.pt_df[i].name);
+		}
+		tmp = val[i] & 0x7;
+		len += sprintf(buf+len, "%d", tmp);
+		if (tmp == 0)
+			len += sprintf(buf+len, "(NONE) ");
+		else if (tmp == 1)
+			len += sprintf(buf+len, "(DCP) ");
+		else if (tmp == 2)
+			len += sprintf(buf+len, "(HIGH CAP) ");
+		else if (tmp == 3)
+			len += sprintf(buf+len, "(RLOW) ");
+		else if (tmp == 4)
+			len += sprintf(buf+len, "(DET_OK) ");
+		else if (tmp == 5)
+			len += sprintf(buf+len, "(RHIGH) ");
+		else if (tmp == 6)
+			len += sprintf(buf+len, "(OPEN) ");
+		else
+			len += sprintf(buf+len, "(DCN) ");
+
+		tmp = (val[i] >> 4) & 0x7;
+		len += sprintf(buf+len, "%d", tmp);
+		if (tmp == 0)
+			len += sprintf(buf+len, "(Unknown)\n");
+		else if (tmp == 1)
+			len += sprintf(buf+len, "(1)\n");
+		else if (tmp == 2)
+			len += sprintf(buf+len, "(2)\n");
+		else if (tmp == 3)
+			len += sprintf(buf+len, "(3)\n");
+		else if (tmp == 4)
+			len += sprintf(buf+len, "(4)\n");
+		else if (tmp == 5)
+			len += sprintf(buf+len, "(5)\n");
+		else if (tmp == 6)
+			len += sprintf(buf+len, "(0)\n");
+		else
+			len += sprintf(buf+len, "(Current_limit)\n");
+	}
+	return len;
+}
+
 static DEVICE_ATTR(port_mode, S_IWUSR|S_IWGRP,
 		NULL, max5980_store_pt_mode);
-static DEVICE_ATTR(port_power_on, S_IWUSR|S_IWUSR,
+static DEVICE_ATTR(port_power_on, S_IWUSR|S_IWGRP,
 		NULL, max5980_store_pt_power_on);
-static DEVICE_ATTR(port_power_off, S_IWUSR|S_IWUSR,
+static DEVICE_ATTR(port_power_off, S_IWUSR|S_IWGRP,
 		NULL, max5980_store_pt_power_off);
 static DEVICE_ATTR(port_info, S_IRUGO,
 		max5980_show_pt_info, NULL);
+static DEVICE_ATTR(reg_info, S_IRUGO|S_IWUSR|S_IWGRP,
+		max5980_show_reg, max5980_store_reg);
+static DEVICE_ATTR(status, S_IRUGO,
+		max5980_show_status, NULL);
 
 static struct attribute *max5980_attributes[] = {
 	&dev_attr_port_mode.attr,
 	&dev_attr_port_power_on.attr,
 	&dev_attr_port_power_off.attr,
 	&dev_attr_port_info.attr,
+	&dev_attr_reg_info.attr,
+	&dev_attr_status.attr,
 	NULL,
 };
 
