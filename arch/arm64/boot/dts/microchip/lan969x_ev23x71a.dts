@@ -600,7 +600,7 @@
 			phy-mode = "10gbase-r";
 			port-name = "sfp0";
 			sfp = <&sfp0>;
-			microchip,sd-sgpio = <365>;
+			microchip,sd-sgpio = <24>;
 			managed = "in-band-status";
 		};
 
@@ -611,7 +611,7 @@
 			phy-mode = "10gbase-r";
 			port-name = "sfp1";
 			sfp = <&sfp1>;
-			microchip,sd-sgpio = <369>;
+			microchip,sd-sgpio = <28>;
 			managed = "in-band-status";
 		};
 	};
