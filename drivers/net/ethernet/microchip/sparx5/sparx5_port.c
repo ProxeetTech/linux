@@ -1163,6 +1163,8 @@ int sparx5_port_init(struct sparx5 *sparx5,
 		 DEV2G5_MAC_MAXLEN_CFG(port->portno));
 
 	/* 1G/2G5: Signal Detect configuration */
+	printk("Signal detect config -> portnum: %d, sd_pol: %d, sd_sel: %d, sd_ena: %d\n",
+	       port->portno, sd_pol, sd_sel, sd_ena);
 	spx5_wr(DEV2G5_PCS1G_SD_CFG_SD_POL_SET(sd_pol) |
 		DEV2G5_PCS1G_SD_CFG_SD_SEL_SET(sd_sel) |
 		DEV2G5_PCS1G_SD_CFG_SD_ENA_SET(sd_ena),
