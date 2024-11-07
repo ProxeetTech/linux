@@ -25,11 +25,28 @@
 		priority = <200>;
 	};
 
+	i2c_gpio_0: i2c-gpio-0 {
+		compatible = "i2c-gpio";
+		//		gpios = <&gpio 54 GPIO_ACTIVE_HIGH /* sda */
+		//				 &gpio 53 GPIO_ACTIVE_HIGH /* scl */
+		//				>;
+		sda-gpios = <&gpio 54 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+		scl-gpios = <&gpio 53 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+		//		i2c-gpio,sda-open-drain;
+		//		i2c-gpio,scl-open-drain;
+		i2c-gpio,delay-us = <2>;	/* ~100 kHz */
+		#address-cells = <1>;
+		#size-cells = <0>;
+		//		pinctrl-names = "default";
+		//		pinctrl-0 = <&gpio_i2c_pins>;
+		status = "okay";
+	};
+
 	i2c-mux {
 		compatible = "i2c-mux-gpio";
 		#address-cells = <1>;
 		#size-cells = <0>;
-		i2c-parent = <&i2c1>;
+		i2c-parent = <&i2c_gpio_0>;
 
 		mux-gpios = <&sgpio_out 0 1 GPIO_ACTIVE_HIGH
 			     &sgpio_out 0 2 GPIO_ACTIVE_HIGH
@@ -233,6 +250,11 @@
 		pins = "GPIO_25", "GPIO_26";
 		function = "fan";
 	};
+
+//	gpio_i2c_pins: gpio-i2c-pins {
+//		pins = "GPIO_54", "GPIO_53";
+//		function = "gpio";
+//	};
 
 	fc0_pins: fc0-pins {
 		pins = "GPIO_3", "GPIO_4";
