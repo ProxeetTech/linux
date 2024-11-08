@@ -25,20 +25,17 @@
 		priority = <200>;
 	};
 
-	i2c_gpio_0: i2c-gpio-0 {
+	i2c_gpio_0: i2c-gpio0 {
 		compatible = "i2c-gpio";
-		//		gpios = <&gpio 54 GPIO_ACTIVE_HIGH /* sda */
-		//				 &gpio 53 GPIO_ACTIVE_HIGH /* scl */
-		//				>;
-		sda-gpios = <&gpio 54 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-		scl-gpios = <&gpio 53 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+		sda-gpios = <&gpio 54 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+		scl-gpios = <&gpio 53 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
 		//		i2c-gpio,sda-open-drain;
 		//		i2c-gpio,scl-open-drain;
 		i2c-gpio,delay-us = <2>;	/* ~100 kHz */
 		#address-cells = <1>;
 		#size-cells = <0>;
-		//		pinctrl-names = "default";
-		//		pinctrl-0 = <&gpio_i2c_pins>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_i2c_pins>;
 		status = "okay";
 	};
 
@@ -238,6 +235,11 @@
 };
 
 &gpio {
+	gpio_i2c_pins: gpio-i2c-pins {
+		pins = "GPIO_53", "GPIO_54";
+		function = "none";
+	};
+
 	emmc_sd_pins: emmc-sd-pins {
 		/* eMMC_SD - CMD, CLK, D0, D1, D2, D3, D4, D5, D6, D7, RSTN */
 		pins = "GPIO_14", "GPIO_15", "GPIO_16", "GPIO_17",
@@ -250,11 +252,6 @@
 		pins = "GPIO_25", "GPIO_26";
 		function = "fan";
 	};
-
-//	gpio_i2c_pins: gpio-i2c-pins {
-//		pins = "GPIO_54", "GPIO_53";
-//		function = "gpio";
-//	};
 
 	fc0_pins: fc0-pins {
 		pins = "GPIO_3", "GPIO_4";
