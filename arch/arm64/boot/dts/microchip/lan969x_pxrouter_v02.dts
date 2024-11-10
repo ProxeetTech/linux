@@ -29,8 +29,6 @@
 		compatible = "i2c-gpio";
 		sda-gpios = <&gpio 54 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
 		scl-gpios = <&gpio 53 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
-		//		i2c-gpio,sda-open-drain;
-		//		i2c-gpio,scl-open-drain;
 		i2c-gpio,delay-us = <2>;	/* ~100 kHz */
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -280,7 +278,7 @@
 &gpio {
 	gpio_i2c_pins: gpio-i2c-pins {
 		pins = "GPIO_53", "GPIO_54";
-		function = "none";
+		function = "gpio";
 	};
 
 	emmc_sd_pins: emmc-sd-pins {
