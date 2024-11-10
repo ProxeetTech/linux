@@ -13,8 +13,36 @@
 #include <linux/gpio.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
-
 #include "max5980.h"
+
+static int max5980_get_gpio(struct device *dev,
+					   struct max5980_platform_data *pdata)
+{
+	int i;
+	for (i = 0; i < MAX5980_PORTS_NUM * VOLTAGE_PINS; i++) {
+		struct gpio_desc *gpiod;
+
+		gpiod = devm_gpiod_get_index(dev, "volt", i, 0);
+		if (IS_ERR(gpiod)) {
+			dev_err(dev, "failed to get GPIO %d\n", i);
+			continue;
+		}
+		gpiod_set_consumer_name(gpiod, "volt");
+
+		dev_info(dev, "using lines to vlotage control %u\n", desc_to_gpio(gpiod));
+
+		pdata->gpio[i] = gpiod;
+	}
+
+	for (i = 0; i < MAX5980_PORTS_NUM; i++) {
+		gpiod_direction_output(pdata->gpio[VOLTAGE_HI + i * VOLTAGE_PINS], 0);
+		gpiod_direction_output(pdata->gpio[VOLTAGE_LO + i * VOLTAGE_PINS], 0);
+		gpiod_direction_input(pdata->gpio[VOLTAGE_HI_R + i * VOLTAGE_PINS]);
+		gpiod_direction_input(pdata->gpio[VOLTAGE_LO_R + i * VOLTAGE_PINS]);
+	}
+
+	return 0;
+}
 
 static int max5980_read_reg(struct max5980_data *ddata, u8 reg)
 {
@@ -126,7 +154,8 @@ int pt_is_valid(struct device *dev, int pt_number) {
 		return 0;
 }
 
-static u8 append_pt_mode_reg(u8 old_mode_reg, int pt_number, int mode) {
+static u8 append_pt_mode_reg(u8 old_mode_reg, int pt_number, int mode)
+{
 	u8 new_mode_reg;
 	u8 pt_mask;
 	pt_mask = ~(MAX5980_PT_MODE_MASK << (pt_number * MAX5980_PT_MODE_FIELD_WIDTH));
@@ -135,7 +164,8 @@ static u8 append_pt_mode_reg(u8 old_mode_reg, int pt_number, int mode) {
 	return new_mode_reg;
 }
 
-static int max5980_get_pt_mode(struct device *dev, int porti) {
+static int max5980_get_pt_mode(struct device *dev, int porti)
+{
 	u8 mode;
 	struct max5980_data *ddata = dev_get_drvdata(dev);
 	mode = max5980_read_reg(ddata, MAX5980_OPER_MODE_REG);
@@ -143,7 +173,8 @@ static int max5980_get_pt_mode(struct device *dev, int porti) {
 	return (int)mode;
 }
 
-static int max5980_set_pt_mode(struct device *dev, int porti, int mode) {
+static int max5980_set_pt_mode(struct device *dev, int porti, int mode)
+{
 	u8 mcfg;
 	struct max5980_data *ddata = dev_get_drvdata(dev);
 
@@ -171,8 +202,8 @@ static int max5980_set_pt_mode(struct device *dev, int porti, int mode) {
 	return 0;
 }
 
-static int max5980_switch_pt_power(struct device *dev, int porti, int state) {
-	int res;
+static int max5980_switch_pt_power(struct device *dev, int porti, int state)
+{
 	struct max5980_data *ddata = dev_get_drvdata(dev);
 	if (porti >= 0 && porti < MAX5980_PORTS_NUM) {
 		if (MAX5980_OPER_MODE_AUTO == max5980_get_pt_mode(dev, porti))
@@ -183,10 +214,40 @@ static int max5980_switch_pt_power(struct device *dev, int porti, int state) {
 			state = MAX5980_PORT_SELECT(porti) << MAX5980_PWR_OFF_SHIFT;
 	}
 	else
-		return (res = -EINVAL);
+		return -EINVAL;
 	return max5980_write_reg(ddata, MAX5980_PWR_EN_PUSHBTN_REG, state);
 }
 
+static int max5980_switch_voltage(struct device *dev, int porti, int voltage)
+{
+	struct max5980_data *ddata = dev_get_drvdata(dev);
+	struct gpio_desc *gpio_h;
+	struct gpio_desc *gpio_l;
+	unsigned long mode;
+	if (porti >= 0) {
+		gpio_h = ddata->pdata.gpio[VOLTAGE_HI + porti * VOLTAGE_PINS];
+		gpio_l = ddata->pdata.gpio[VOLTAGE_LO + porti * VOLTAGE_PINS];
+		mode = max5980_get_pt_mode(dev, porti);
+
+		if (mode == MAX5980_OPER_MODE_MANUAL) {
+			if (0 == voltage) {
+				gpiod_set_value_cansleep(gpio_h, 0);
+				gpiod_set_value_cansleep(gpio_l, 0);
+			} else if (24 == voltage) {
+				gpiod_set_value_cansleep(gpio_h, 0);
+				gpiod_set_value_cansleep(gpio_l, 1);
+			} else if (48 == voltage) {
+				gpiod_set_value_cansleep(gpio_h, 1);
+				gpiod_set_value_cansleep(gpio_l, 0);
+			}
+			ddata->voltage[porti] = voltage;
+			return 0;
+		} else {
+			ddata->voltage[porti] = 0;
+		}
+	}
+	return -EINVAL;
+}
 
 static int max5980_apply_dt_defaults(struct device *dev) {
 	int i;
@@ -212,8 +273,10 @@ static ssize_t max5980_store_pt_mode(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count) {
 	u8 mode;
 	int port_idx = ASCII_TO_DIGIT(buf[0]);
-	if (!pt_is_valid(dev, port_idx))
+	if (!pt_is_valid(dev, port_idx)) {
+		dev_info(dev, "Invalid port number: %d", port_idx);
 		return -EINVAL;
+	}
 	if (!strncmp(buf + 1, "off", 3))
 		mode = MAX5980_OPER_MODE_SHUTDOWN;
 	else if (!strncmp(buf + 1, "manual", 6))
@@ -222,8 +285,10 @@ static ssize_t max5980_store_pt_mode(struct device *dev,
 		mode = MAX5980_OPER_MODE_SEMIAUTO;
 	else if (!strncmp(buf + 1, "auto", 4))
 		mode = MAX5980_OPER_MODE_AUTO;
-	else
+	else {
+		dev_info(dev, "Invalid port mode: %s", buf + 1);
 		return -EINVAL;
+	}
 	max5980_set_pt_mode(dev, port_idx, mode);
 	return count;
 }
@@ -258,7 +323,7 @@ static ssize_t max5980_show_pt_info(struct device *dev,
 		struct device_attribute *attr, char *buf) {
 	int i;
 	int len;
-	unsigned long val = 0;
+	unsigned long val, mode;
 	struct max5980_data *ddata = dev_get_drvdata(dev);
 	max5980_read(ddata, MAX5980_DC_REGS, MAX5980_DC_INFO_SZ, ddata->pt_dc);
 	len = sprintf(buf, "# name mode voltage current\n"); /* column names */
@@ -272,14 +337,14 @@ static ssize_t max5980_show_pt_info(struct device *dev,
 			len += sprintf(buf+len, "%s ", ddata->pdata.pt_df[i].name);
 		}
 		/* Port mode of operation */
-		val = max5980_get_pt_mode(dev, i);
-		if (val == MAX5980_OPER_MODE_SHUTDOWN)
+		mode = max5980_get_pt_mode(dev, i);
+		if (mode == MAX5980_OPER_MODE_SHUTDOWN)
 			len += sprintf(buf+len, "off ");
-		else if (val == MAX5980_OPER_MODE_MANUAL)
+		else if (mode == MAX5980_OPER_MODE_MANUAL)
 			len += sprintf(buf+len, "manual ");
-		else if (val == MAX5980_OPER_MODE_SEMIAUTO)
+		else if (mode == MAX5980_OPER_MODE_SEMIAUTO)
 			len += sprintf(buf+len, "semiauto ");
-		else if (val == MAX5980_OPER_MODE_AUTO)
+		else if (mode == MAX5980_OPER_MODE_AUTO)
 			len += sprintf(buf+len, "auto ");
 		else
 			len += sprintf(buf+len, "unknown ");
@@ -293,12 +358,19 @@ static ssize_t max5980_show_pt_info(struct device *dev,
 		}
 		/* Port current intensity */
 		if (!pt_is_valid(dev, i))
-			len += sprintf(buf+len,"*\n");
+			len += sprintf(buf+len,"* ");
 		else {
 			val = CURR_LSB * __le16_to_cpu(ddata->pt_dc[i].i);
-			len += sprintf(buf+len, "%lu.%03lu\n",
+			len += sprintf(buf+len, "%lu.%03lu ",
 					val/1000000000, val/1000000);
 		}
+
+		if (MAX5980_OPER_MODE_MANUAL == mode)
+			len += sprintf(buf+len, "%d", ddata->voltage[i]);
+		else
+			len += sprintf(buf+len, "-");
+
+		len += sprintf(buf+len, "\n");
 	}
 	return len;
 }
@@ -374,23 +446,58 @@ static ssize_t max5980_show_status(struct device *dev,
 		tmp = (val[i] >> 4) & 0x7;
 		len += sprintf(buf+len, "%d", tmp);
 		if (tmp == 0)
-			len += sprintf(buf+len, "(Unknown)\n");
+			len += sprintf(buf+len, "(Unknown) ");
 		else if (tmp == 1)
-			len += sprintf(buf+len, "(1)\n");
+			len += sprintf(buf+len, "(1) ");
 		else if (tmp == 2)
-			len += sprintf(buf+len, "(2)\n");
+			len += sprintf(buf+len, "(2) ");
 		else if (tmp == 3)
-			len += sprintf(buf+len, "(3)\n");
+			len += sprintf(buf+len, "(3) ");
 		else if (tmp == 4)
-			len += sprintf(buf+len, "(4)\n");
+			len += sprintf(buf+len, "(4) ");
 		else if (tmp == 5)
-			len += sprintf(buf+len, "(5)\n");
+			len += sprintf(buf+len, "(5) ");
 		else if (tmp == 6)
-			len += sprintf(buf+len, "(0)\n");
+			len += sprintf(buf+len, "(0) ");
 		else
-			len += sprintf(buf+len, "(Current_limit)\n");
+			len += sprintf(buf+len, "(Current_limit) ");
+
+		len += sprintf(buf+len, "\n");
 	}
 	return len;
+}
+
+static ssize_t max5980_store_voltage(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	int res;
+	long voltage;
+	int port_idx;
+
+	if (count < 3) {
+		dev_info(dev, "Input buffer is too small %ld\n", count);
+		return -EINVAL;
+	}
+
+	port_idx = ASCII_TO_DIGIT(buf[0]);
+	res = kstrtol(buf + 2, 10, &voltage);
+
+	if (res != 0) {
+		dev_info(dev, "It is impossible to parse voltage string %s\n", buf + 2);
+		return res;
+	}
+
+	if (!pt_is_valid(dev, port_idx)) {
+		dev_info(dev, "It is a disabled port\n");
+		return -EINVAL;
+	}
+
+	res = max5980_switch_voltage(dev, port_idx, voltage);
+
+	if (res == 0)
+		return count;
+	else
+		return res;
 }
 
 static DEVICE_ATTR(port_mode, S_IWUSR|S_IWGRP,
@@ -405,6 +512,8 @@ static DEVICE_ATTR(reg_info, S_IRUGO|S_IWUSR|S_IWGRP,
 		max5980_show_reg, max5980_store_reg);
 static DEVICE_ATTR(status, S_IRUGO,
 		max5980_show_status, NULL);
+static DEVICE_ATTR(voltage, S_IWUSR|S_IWGRP,
+		NULL, max5980_store_voltage);
 
 static struct attribute *max5980_attributes[] = {
 	&dev_attr_port_mode.attr,
@@ -413,6 +522,7 @@ static struct attribute *max5980_attributes[] = {
 	&dev_attr_port_info.attr,
 	&dev_attr_reg_info.attr,
 	&dev_attr_status.attr,
+	&dev_attr_voltage.attr,
 	NULL,
 };
 
@@ -447,6 +557,10 @@ static int max5980_of_probe(struct device *dev,
 	
 	of_property_read_u32(np, "irq-gpio", &pdata->irq);
 	dev_info(dev, "irq-gpio: %d", pdata->irq);
+
+	if (max5980_get_gpio(dev, pdata))
+		return -EINVAL;
+
 	i = 0;
 	for_each_child_of_node(np, child) {
 		of_property_read_u32(child, "enable", &pdata->pt_df[i].enable);

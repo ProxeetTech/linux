@@ -58,27 +58,27 @@
 			reg = <0x1>;
 		};
 
-		i2c_2: i2c_2 {
+		i2c_2: i2c-2 {
 			reg = <0x2>;
 		};
 
-		i2c_3: i2c_3 {
+		i2c_3: i2c-3 {
 			reg = <0x3>;
 		};
 
-		i2c_4: i2c_4 {
+		i2c_4: i2c-4 {
 			reg = <0x4>;
 		};
 
-		i2c_5: i2c_5 {
+		i2c_5: i2c-5 {
 			reg = <0x5>;
 		};
 
-		i2c_6: i2c_6 {
+		i2c_6: i2c-6 {
 			reg = <0x6>;
 		};
 
-		i2c_poe: i2c_poe {
+		i2c_poe: i2c-poe {
 			reg = <0x7>;
 		};
 	};
@@ -130,6 +130,27 @@
 	};
 };
 
+&i2c_3 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	expander0: pca9555@20 {
+		compatible = "nxp,pca9555";
+		reg = <0x20>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	expander1: pca9555@21 {
+		compatible = "nxp,pca9555";
+		reg = <0x21>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+};
+
 &i2c_poe {
 	#address-cells = <1>;
 	#size-cells = <0>;
@@ -137,6 +158,15 @@
 	poe0: max5980@2C {
         compatible = "maxim,max5980";
         reg = <0x2C>;
+
+        volt-gpios = <&expander0 0 0>, <&expander0 1 0>,
+                     <&expander0 2 0>, <&expander0 3 0>,
+                     <&expander0 4 0>, <&expander0 5 0>,
+                     <&expander0 6 0>, <&expander0 7 0>,
+                     <&expander0 8 0>, <&expander0 9 0>,
+                     <&expander0 10 0>, <&expander0 11 0>,
+                     <&expander0 12 0>, <&expander0 13 0>,
+                     <&expander0 14 0>, <&expander0 15 0>;
 
         port0@0 {
                 enable = <1>;
@@ -164,29 +194,42 @@
         };
 	};
 
-	poe1: max5980@C {
+	poe1: max5980@2D {
         compatible = "maxim,max5980";
-        reg = <0x0C>;
+        reg = <0x2D>;
+
+        volt-gpios = <&expander1 0 0>, <&expander1 1 0>,
+                     <&expander1 2 0>, <&expander1 3 0>,
+                     <&expander1 4 0>, <&expander1 5 0>,
+                     <&expander1 6 0>, <&expander1 7 0>,
+                     <&expander1 8 0>, <&expander1 9 0>,
+                     <&expander1 10 0>, <&expander1 11 0>,
+                     <&expander1 12 0>, <&expander1 13 0>,
+                     <&expander1 14 0>, <&expander1 15 0>;
 
         port0@0 {
                 enable = <1>;
                 mode = "auto";
                 power = <1>;
+                name-ref = <&switch 4>;
         };
         port1@1 {
                 enable = <1>;
                 mode = "auto";
                 power = <1>;
+                name-ref = <&switch 5>;
         };
         port2@2 {
                 enable = <1>;
                 mode = "auto";
                 power = <1>;
+                name-ref = <&switch 6>;
         };
         port3@3 {
                 enable = <1>;
                 mode = "auto";
                 power = <1>;
+                name-ref = <&switch 7>;
         };
 	};
 };

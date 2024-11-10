@@ -655,9 +655,11 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
 	if (dw_wdt_is_enabled(dw_wdt)) {
 		wdd->timeout = dw_wdt_get_timeout(dw_wdt);
 		set_bit(WDOG_HW_RUNNING, &wdd->status);
+		dev_info(dev, "WDT is enabled, timeout %d", wdd->timeout);
 	} else {
 		wdd->timeout = DW_WDT_DEFAULT_SECONDS;
 		watchdog_init_timeout(wdd, 0, dev);
+		dev_info(dev, "WDT is not enabled, default timeout %d", wdd->timeout);
 	}
 
 	platform_set_drvdata(pdev, dw_wdt);
