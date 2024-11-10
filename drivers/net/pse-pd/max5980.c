@@ -227,24 +227,18 @@ static int max5980_switch_voltage(struct device *dev, int porti, int voltage)
 	if (porti >= 0) {
 		gpio_h = ddata->pdata.gpio[VOLTAGE_HI + porti * VOLTAGE_PINS];
 		gpio_l = ddata->pdata.gpio[VOLTAGE_LO + porti * VOLTAGE_PINS];
-		mode = max5980_get_pt_mode(dev, porti);
-
-		if (mode == MAX5980_OPER_MODE_MANUAL) {
-			if (0 == voltage) {
-				gpiod_set_value_cansleep(gpio_h, 0);
-				gpiod_set_value_cansleep(gpio_l, 0);
-			} else if (24 == voltage) {
-				gpiod_set_value_cansleep(gpio_h, 0);
-				gpiod_set_value_cansleep(gpio_l, 1);
-			} else if (48 == voltage) {
-				gpiod_set_value_cansleep(gpio_h, 1);
-				gpiod_set_value_cansleep(gpio_l, 0);
-			}
-			ddata->voltage[porti] = voltage;
-			return 0;
-		} else {
-			ddata->voltage[porti] = 0;
+		if (0 == voltage) {
+			gpiod_set_value_cansleep(gpio_h, 0);
+			gpiod_set_value_cansleep(gpio_l, 0);
+		} else if (24 == voltage) {
+			gpiod_set_value_cansleep(gpio_h, 0);
+			gpiod_set_value_cansleep(gpio_l, 1);
+		} else if (48 == voltage) {
+			gpiod_set_value_cansleep(gpio_h, 1);
+			gpiod_set_value_cansleep(gpio_l, 0);
 		}
+		ddata->voltage[porti] = voltage;
+		return 0;
 	}
 	return -EINVAL;
 }
@@ -365,11 +359,7 @@ static ssize_t max5980_show_pt_info(struct device *dev,
 					val/1000000000, val/1000000);
 		}
 
-		if (MAX5980_OPER_MODE_MANUAL == mode)
-			len += sprintf(buf+len, "%d", ddata->voltage[i]);
-		else
-			len += sprintf(buf+len, "-");
-
+		len += sprintf(buf+len, "%d", ddata->voltage[i]);
 		len += sprintf(buf+len, "\n");
 	}
 	return len;

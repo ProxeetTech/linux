@@ -168,25 +168,25 @@
 
         port0@0 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
 				name-ref = <&switch 0>;
         };
         port1@1 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
 				name-ref = <&switch 1>;
         };
         port2@2 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
 				name-ref = <&switch 2>;
         };
         port3@3 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
 				name-ref = <&switch 3>;
         };
@@ -207,25 +207,25 @@
 
         port0@0 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
                 name-ref = <&switch 4>;
         };
         port1@1 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
                 name-ref = <&switch 5>;
         };
         port2@2 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
                 name-ref = <&switch 6>;
         };
         port3@3 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
                 name-ref = <&switch 7>;
         };
