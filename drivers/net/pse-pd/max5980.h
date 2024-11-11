@@ -5,6 +5,8 @@
 #ifndef __MAX5980_H__
 #define __MAX5980_H__
 
+#include <linux/gpio/consumer.h>
+
 #define MAX5980_PORTS_NUM	4
 #define ASCII_TO_DIGIT(ascii_digit) (ascii_digit - 0x30) 
 
@@ -305,6 +307,13 @@ enum max5980_port_id {
 #define VOLT_LSB		5835
 #define CURR_LSB		122070
 
+#define VOLTAGE_HI      0
+#define VOLTAGE_LO      1
+#define VOLTAGE_HI_R    2
+#define VOLTAGE_LO_R    3
+
+#define VOLTAGE_PINS    4
+
 struct pt_dc_parm {
 	s16 i;
 	s16 v;
@@ -320,12 +329,14 @@ struct pt_dflt {
 struct max5980_platform_data {
 	u32 irq;
 	struct pt_dflt pt_df[MAX5980_PORTS_NUM];
+	struct gpio_desc *gpio[MAX5980_PORTS_NUM * VOLTAGE_PINS];
 };
 
 struct max5980_data {
 	struct i2c_client *client;
 	struct max5980_platform_data pdata;
 	struct pt_dc_parm pt_dc[MAX5980_PORTS_NUM];
+	int voltage[MAX5980_PORTS_NUM];
 	int reg;
 };
 

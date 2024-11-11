@@ -25,11 +25,23 @@
 		priority = <200>;
 	};
 
+	i2c_gpio_0: i2c-gpio0 {
+		compatible = "i2c-gpio";
+		sda-gpios = <&gpio 54 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+		scl-gpios = <&gpio 53 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+		i2c-gpio,delay-us = <2>;	/* ~100 kHz */
+		#address-cells = <1>;
+		#size-cells = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_i2c_pins>;
+		status = "okay";
+	};
+
 	i2c-mux {
 		compatible = "i2c-mux-gpio";
 		#address-cells = <1>;
 		#size-cells = <0>;
-		i2c-parent = <&i2c1>;
+		i2c-parent = <&i2c_gpio_0>;
 
 		mux-gpios = <&sgpio_out 0 1 GPIO_ACTIVE_HIGH
 			     &sgpio_out 0 2 GPIO_ACTIVE_HIGH
@@ -44,27 +56,27 @@
 			reg = <0x1>;
 		};
 
-		i2c_2: i2c_2 {
+		i2c_2: i2c-2 {
 			reg = <0x2>;
 		};
 
-		i2c_3: i2c_3 {
+		i2c_3: i2c-3 {
 			reg = <0x3>;
 		};
 
-		i2c_4: i2c_4 {
+		i2c_4: i2c-4 {
 			reg = <0x4>;
 		};
 
-		i2c_5: i2c_5 {
+		i2c_5: i2c-5 {
 			reg = <0x5>;
 		};
 
-		i2c_6: i2c_6 {
+		i2c_6: i2c-6 {
 			reg = <0x6>;
 		};
 
-		i2c_poe: i2c_poe {
+		i2c_poe: i2c-poe {
 			reg = <0x7>;
 		};
 	};
@@ -116,6 +128,27 @@
 	};
 };
 
+&i2c_3 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	expander0: pca9555@20 {
+		compatible = "nxp,pca9555";
+		reg = <0x20>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	expander1: pca9555@21 {
+		compatible = "nxp,pca9555";
+		reg = <0x21>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+};
+
 &i2c_poe {
 	#address-cells = <1>;
 	#size-cells = <0>;
@@ -124,55 +157,77 @@
         compatible = "maxim,max5980";
         reg = <0x2C>;
 
+        volt-gpios = <&expander0 0 0>, <&expander0 1 0>,
+                     <&expander0 2 0>, <&expander0 3 0>,
+                     <&expander0 4 0>, <&expander0 5 0>,
+                     <&expander0 6 0>, <&expander0 7 0>,
+                     <&expander0 8 0>, <&expander0 9 0>,
+                     <&expander0 10 0>, <&expander0 11 0>,
+                     <&expander0 12 0>, <&expander0 13 0>,
+                     <&expander0 14 0>, <&expander0 15 0>;
+
         port0@0 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
 				name-ref = <&switch 0>;
         };
         port1@1 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
 				name-ref = <&switch 1>;
         };
         port2@2 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
 				name-ref = <&switch 2>;
         };
         port3@3 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
 				name-ref = <&switch 3>;
         };
 	};
 
-	poe1: max5980@C {
+	poe1: max5980@2D {
         compatible = "maxim,max5980";
-        reg = <0x0C>;
+        reg = <0x2D>;
+
+        volt-gpios = <&expander1 0 0>, <&expander1 1 0>,
+                     <&expander1 2 0>, <&expander1 3 0>,
+                     <&expander1 4 0>, <&expander1 5 0>,
+                     <&expander1 6 0>, <&expander1 7 0>,
+                     <&expander1 8 0>, <&expander1 9 0>,
+                     <&expander1 10 0>, <&expander1 11 0>,
+                     <&expander1 12 0>, <&expander1 13 0>,
+                     <&expander1 14 0>, <&expander1 15 0>;
 
         port0@0 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
+                name-ref = <&switch 4>;
         };
         port1@1 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
+                name-ref = <&switch 5>;
         };
         port2@2 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
+                name-ref = <&switch 6>;
         };
         port3@3 {
                 enable = <1>;
-                mode = "auto";
+                mode = "off";
                 power = <1>;
+                name-ref = <&switch 7>;
         };
 	};
 };
@@ -221,6 +276,11 @@
 };
 
 &gpio {
+	gpio_i2c_pins: gpio-i2c-pins {
+		pins = "GPIO_53", "GPIO_54";
+		function = "gpio";
+	};
+
 	emmc_sd_pins: emmc-sd-pins {
 		/* eMMC_SD - CMD, CLK, D0, D1, D2, D3, D4, D5, D6, D7, RSTN */
 		pins = "GPIO_14", "GPIO_15", "GPIO_16", "GPIO_17",
