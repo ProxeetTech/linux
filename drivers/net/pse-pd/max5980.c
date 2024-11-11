@@ -223,7 +223,7 @@ static int max5980_switch_voltage(struct device *dev, int porti, int voltage)
 	struct max5980_data *ddata = dev_get_drvdata(dev);
 	struct gpio_desc *gpio_h;
 	struct gpio_desc *gpio_l;
-	unsigned long mode;
+
 	if (porti >= 0) {
 		gpio_h = ddata->pdata.gpio[VOLTAGE_HI + porti * VOLTAGE_PINS];
 		gpio_l = ddata->pdata.gpio[VOLTAGE_LO + porti * VOLTAGE_PINS];
