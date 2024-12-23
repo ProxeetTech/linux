@@ -456,6 +456,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth14";
 			phys = <&serdes 0>;
+			max-frame-size = <13942>;
 		};
 
 		port1: port@1 {
@@ -465,6 +466,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth13";
 			phys = <&serdes 0>;
+			max-frame-size = <13942>;
 		};
 
 		port2: port@2 {
@@ -474,6 +476,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth16";
 			phys = <&serdes 0>;
+			max-frame-size = <13942>;
 		};
 
 		port3: port@3 {
@@ -483,6 +486,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth15";
 			phys = <&serdes 0>;
+			max-frame-size = <13942>;
 		};
 
 		port4: port@4 {
@@ -492,6 +496,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth10";
 			phys = <&serdes 1>;
+			max-frame-size = <13942>;
 		};
 
 		port5: port@5 {
@@ -501,6 +506,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth9";
 			phys = <&serdes 1>;
+			max-frame-size = <13942>;
 		};
 
 		port6: port@6 {
@@ -510,6 +516,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth12";
 			phys = <&serdes 1>;
+			max-frame-size = <13942>;
 		};
 
 		port7: port@7 {
@@ -519,6 +526,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth11";
 			phys = <&serdes 1>;
+			max-frame-size = <13942>;
 		};
 
 		port8: port@8 {
@@ -528,6 +536,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth6";
 			phys = <&serdes 2>;
+			max-frame-size = <13942>;
 		};
 
 		port9: port@9 {
@@ -537,6 +546,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth5";
 			phys = <&serdes 2>;
+			max-frame-size = <13942>;
 		};
 
 		port10: port@10 {
@@ -546,6 +556,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth8";
 			phys = <&serdes 2>;
+			max-frame-size = <13942>;
 		};
 
 		port11: port@11 {
@@ -555,6 +566,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth7";
 			phys = <&serdes 2>;
+			max-frame-size = <13942>;
 		};
 
 		port12: port@12 {
@@ -564,6 +576,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth2";
 			phys = <&serdes 3>;
+			max-frame-size = <13942>;
 		};
 
 		port13: port@13 {
@@ -573,6 +586,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth1";
 			phys = <&serdes 3>;
+			max-frame-size = <13942>;
 		};
 
 		port14: port@14 {
@@ -582,6 +596,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth4";
 			phys = <&serdes 3>;
+			max-frame-size = <13942>;
 		};
 
 		port15: port@15 {
@@ -591,6 +606,7 @@
 			phy-mode = "qsgmii";
 			port-name = "eth3";
 			phys = <&serdes 3>;
+			max-frame-size = <13942>;
 		};
 
 		port16: port@16 {

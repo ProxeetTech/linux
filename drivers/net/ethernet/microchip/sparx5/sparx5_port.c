@@ -32,7 +32,7 @@ enum port_error {
 };
 
 #define PAUSE_DISCARD        0xC
-#define ETH_MAXLEN           (ETH_DATA_LEN + ETH_HLEN + ETH_FCS_LEN)
+#define ETH_MAXLEN           (ETH_DATA_LEN + ETH_MAX_OVERHEAD)
 
 static void decode_sgmii_word(u16 lp_abil, struct sparx5_port_status *status)
 {

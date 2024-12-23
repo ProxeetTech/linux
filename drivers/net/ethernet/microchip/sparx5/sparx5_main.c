@@ -43,6 +43,7 @@ struct initial_port_config {
 	struct sparx5_port_config conf;
 	struct phy *serdes;
 	const char *port_name;
+	u32 max_mtu;
 };
 
 struct sparx5_ram_config {
@@ -301,6 +302,7 @@ static int sparx5_create_port(struct sparx5 *sparx5,
 			config->portno);
 		return PTR_ERR(ndev);
 	}
+	ndev->max_mtu = config->max_mtu;
 	spx5_port = netdev_priv(ndev);
 	spx5_port->of_node = config->node;
 	spx5_port->serdes = config->serdes;
@@ -863,6 +865,7 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
 		struct phy *serdes;
 		u32 portno;
 		const char *port_name = NULL;
+		u32 max_mtu;
 
 		err = of_property_read_u32(portnp, "reg", &portno);
 		if (err) {
@@ -879,6 +882,11 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
 			dev_err(sparx5->dev, "port %u: missing port-name\n",
 				portno);
 		}
+
+		err = of_property_read_u32(portnp, "max-frame-size",
+				       &max_mtu);
+		if (err)
+			max_mtu = 1500;
 
 		err = of_get_phy_mode(portnp, &conf->phy_mode);
 		if (err) {
@@ -911,6 +919,7 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
 		config->node = portnp;
 		config->serdes = serdes;
 		config->port_name = port_name;
+		config->max_mtu = max_mtu;
 
 		conf->media = PHY_MEDIA_DAC;
 		conf->serdes_reset = true;

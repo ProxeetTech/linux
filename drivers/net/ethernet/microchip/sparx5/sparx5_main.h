@@ -139,6 +139,18 @@ enum sparx5_vlan_port_type {
 #define SPX5_DSM_CAL_MAX_DEVS_PER_TAXI 13
 #define SPX5_DSM_CAL_TAXIS             8
 
+/*
+   14 (Ethernet-header)
+   4 (FCS)
+   4 (1st VLAN-tag)
+   4 (2nd VLAN-tag)
+   16 (MACSec-header)
+   16 (MACSec-trailer)
+   -------------------
+   58 in total
+*/
+#define ETH_MAX_OVERHEAD     58
+
 struct sparx5;
 
 /* For each hardware DB there is an entry in this list and when the HW DB
