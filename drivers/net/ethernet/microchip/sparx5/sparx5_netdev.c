@@ -26,6 +26,8 @@
 		__ifh_encode_bitfield((ifh), (value), (pos), width);	\
 	})
 
+#define SPARX5_HW_MTU(mtu)		((mtu) + ETH_MAX_OVERHEAD)
+
 static void __ifh_encode_bitfield(void *ifh, u64 value, u32 pos, u32 width)
 {
 	u8 *ifh_hdr = ifh;
@@ -280,6 +282,35 @@ static int sparx5_port_ioctl(struct net_device *dev, struct ifreq *ifr,
 	return 0;
 }
 
+static int sparx5_port_change_mtu(struct net_device *dev, int new_mtu)
+{
+	struct sparx5_port *port = netdev_priv(dev);
+	struct sparx5 *sparx5 = port->sparx5;
+	const struct sparx5_ops *ops = &sparx5->data->ops;
+	u32 p = sparx5_port_dev_index(sparx5, port->portno);
+	u32 d = sparx5_to_high_dev(sparx5, port->portno);
+	void __iomem *devinst = spx5_inst_get(port->sparx5, d, p);
+
+	dev->mtu = new_mtu;
+
+	/* Set Max Length */
+	spx5_rmw(DEV2G5_MAC_MAXLEN_CFG_MAX_LEN_SET(SPARX5_HW_MTU(new_mtu)),
+		 DEV2G5_MAC_MAXLEN_CFG_MAX_LEN,
+		 sparx5,
+		 DEV2G5_MAC_MAXLEN_CFG(port->portno));
+
+	if (ops->port_is_2g5(port->portno))
+		return 0; /* Low speed device only - return */
+
+	/* Set Max Length */
+	spx5_inst_rmw(DEV10G_MAC_MAXLEN_CFG_MAX_LEN_SET(SPARX5_HW_MTU(new_mtu)),
+		      DEV10G_MAC_MAXLEN_CFG_MAX_LEN,
+		      devinst,
+		      DEV10G_MAC_ENA_CFG(0));
+
+	return 0;
+}
+
 static const struct net_device_ops sparx5_port_netdev_ops = {
 	.ndo_open               = sparx5_port_open,
 	.ndo_stop               = sparx5_port_stop,
@@ -292,6 +323,7 @@ static const struct net_device_ops sparx5_port_netdev_ops = {
 	.ndo_get_port_parent_id = sparx5_get_port_parent_id,
 	.ndo_eth_ioctl          = sparx5_port_ioctl,
 	.ndo_setup_tc           = sparx5_port_setup_tc,
+	.ndo_change_mtu         = sparx5_port_change_mtu
 };
 
 bool sparx5_netdevice_check(const struct net_device *dev)
@@ -323,7 +355,6 @@ struct net_device *sparx5_create_netdev(struct sparx5 *sparx5, u32 portno, const
 	} else {
 		snprintf(ndev->name, IFNAMSIZ, "eth%d", portno);
 	}
-
 
 	ndev->netdev_ops = &sparx5_port_netdev_ops;
 	ndev->ethtool_ops = &sparx5_ethtool_ops;
