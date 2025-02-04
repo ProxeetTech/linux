@@ -206,12 +206,13 @@ static int max5980_switch_pt_power(struct device *dev, int porti, int state)
 {
 	struct max5980_data *ddata = dev_get_drvdata(dev);
 	if (porti >= 0 && porti < MAX5980_PORTS_NUM) {
-		if (MAX5980_OPER_MODE_AUTO == max5980_get_pt_mode(dev, porti))
-			return -EINVAL;
-		if (state == 1)
+		if (state == 1) {
+			if (MAX5980_OPER_MODE_AUTO == max5980_get_pt_mode(dev, porti))
+				return -EINVAL;
 			state = MAX5980_PORT_SELECT(porti) << MAX5980_PWR_ON_SHIFT;
-		else
+		} else {
 			state = MAX5980_PORT_SELECT(porti) << MAX5980_PWR_OFF_SHIFT;
+		}
 	}
 	else
 		return -EINVAL;
