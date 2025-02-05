@@ -146,7 +146,7 @@ static irqreturn_t max5980_irq_handler(int irq, void *device_data)
 	return IRQ_HANDLED;
 }
 
-int pt_is_valid(struct device *dev, int pt_number) {
+static int pt_is_valid(struct device *dev, int pt_number) {
 	struct max5980_data *ddata = dev_get_drvdata(dev);
 	if (ddata->pdata.pt_df[pt_number].enable == 1)
 		return 1;
@@ -621,7 +621,7 @@ static int max5980_of_probe(struct device *dev,
 static int max5980_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {	
 	int res;
-	static struct max5980_data *ddata;
+	struct max5980_data *ddata;
 	struct max5980_platform_data *pdata;
 	struct device *dev = &client->dev;
 
