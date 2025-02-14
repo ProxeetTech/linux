@@ -8,3 +8,4 @@ dtb-$(CONFIG_ARCH_SPARX5) += \
 dtb-$(CONFIG_ARCH_LAN969X) += lan969x_sr.dtb lan969x_ev23x71a.dtb \
 	lan969x_appl_ev23x71a.dtb lan969x_pcb10001.dtb lan969x_pxrouter_v02.dtb lan969x_pxrouter_v03.dtb \
 	lan969x_pxrouter_som_v01.dtb
+DTC_FLAGS += -@

@@ -13,7 +13,7 @@
  */
 &{/chosen} {
     overlays {
-            serdes.kernel = "Test";
+            carrier.overlay = "4_port_switch_carrier_v01";
     };
 };
 
