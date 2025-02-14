@@ -1,0 +1,409 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2025
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include "../microchip/lan969x.dtsi"
+
+/*
+ * Helper to show loaded overlays under: /proc/device-tree/chosen/overlays/
+ */
+&{/chosen} {
+    overlays {
+            serdes.kernel = "Test";
+    };
+};
+
+&i2c_poe {
+    #address-cells = <1>;
+    #size-cells = <0>;
+
+    poe0: max5980@2C {
+        compatible = "maxim,max5980";
+        reg = <0x2C>;
+
+        volt-gpios = <&expander0 0 0>, <&expander0 1 0>,
+                    <&expander0 2 0>, <&expander0 3 0>,
+                    <&expander0 4 0>, <&expander0 5 0>,
+                    <&expander0 6 0>, <&expander0 7 0>,
+                    <&expander0 8 0>, <&expander0 9 0>,
+                    <&expander0 10 0>, <&expander0 11 0>,
+                    <&expander0 12 0>, <&expander0 13 0>,
+                    <&expander0 14 0>, <&expander0 15 0>;
+
+        port0@0 {
+            enable = <1>;
+            mode = "off";
+            power = <1>;
+            name-ref = <&switch 0>;
+        };
+        port1@1 {
+            enable = <1>;
+            mode = "off";
+            power = <1>;
+            name-ref = <&switch 1>;
+        };
+        port2@2 {
+            enable = <1>;
+            mode = "off";
+            power = <1>;
+            name-ref = <&switch 2>;
+        };
+        port3@3 {
+            enable = <1>;
+            mode = "off";
+            power = <1>;
+            name-ref = <&switch 3>;
+        };
+	};
+
+	poe1: max5980@2D {
+        compatible = "maxim,max5980";
+        reg = <0x2D>;
+
+        volt-gpios = <&expander1 0 0>, <&expander1 1 0>,
+                        <&expander1 2 0>, <&expander1 3 0>,
+                        <&expander1 4 0>, <&expander1 5 0>,
+                        <&expander1 6 0>, <&expander1 7 0>,
+                        <&expander1 8 0>, <&expander1 9 0>,
+                        <&expander1 10 0>, <&expander1 11 0>,
+                        <&expander1 12 0>, <&expander1 13 0>,
+                        <&expander1 14 0>, <&expander1 15 0>;
+
+        port0@0 {
+                enable = <1>;
+                mode = "off";
+                power = <1>;
+                name-ref = <&switch 4>;
+        };
+        port1@1 {
+                enable = <1>;
+                mode = "off";
+                power = <1>;
+                name-ref = <&switch 5>;
+        };
+        port2@2 {
+                enable = <1>;
+                mode = "off";
+                power = <1>;
+                name-ref = <&switch 6>;
+        };
+        port3@3 {
+                enable = <1>;
+                mode = "off";
+                power = <1>;
+                name-ref = <&switch 7>;
+        };
+    };
+};
+
+
+&gpio {
+	mdio_pins: mdio-pins {
+		pins = "GPIO_9", "GPIO_10";
+		function = "miim";
+	};
+
+	mdio_irq_pins: mdio-irq-pins {
+		pins = "GPIO_11";
+		function = "miim_irq";
+	};
+};
+
+&mdio0 {
+	pinctrl-0 = <&mdio_pins>, <&mdio_irq_pins>;
+	pinctrl-names = "default";
+	reset-gpios = <&gpio 62 GPIO_ACTIVE_LOW>;
+	status = "okay";
+
+	phy4: phy@4 {
+		reg = <4>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy5: phy@5 {
+		reg = <5>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy6: phy@6 {
+		reg = <6>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy7: phy@7 {
+		reg = <7>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy8: phy@8 {
+		reg = <8>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy9: phy@9 {
+		reg = <9>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy10: phy@10 {
+		reg = <10>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy11: phy@11 {
+		reg = <11>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy12: phy@12 {
+		reg = <12>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy13: phy@13 {
+		reg = <13>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy14: phy@14 {
+		reg = <14>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy15: phy@15 {
+		reg = <15>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy16: phy@16 {
+		reg = <16>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy17: phy@17 {
+		reg = <17>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy18: phy@18 {
+		reg = <18>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+
+	phy19: phy@19 {
+		reg = <19>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&gpio>;
+	};
+};
+
+&switch {
+	status = "okay";
+	mac-address = [ 08 00 3B 00 00 00 ];
+
+	ethernet-ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port0: port@0 {
+			reg = <0>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy8>;
+			phy-mode = "qsgmii";
+			port-name = "eth14";
+			phys = <&serdes 0>;
+			max-frame-size = <13942>;
+		};
+
+		port1: port@1 {
+			reg = <1>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy9>;
+			phy-mode = "qsgmii";
+			port-name = "eth13";
+			phys = <&serdes 0>;
+			max-frame-size = <13942>;
+		};
+
+		port2: port@2 {
+			reg = <2>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy10>;
+			phy-mode = "qsgmii";
+			port-name = "eth16";
+			phys = <&serdes 0>;
+			max-frame-size = <13942>;
+		};
+
+		port3: port@3 {
+			reg = <3>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy11>;
+			phy-mode = "qsgmii";
+			port-name = "eth15";
+			phys = <&serdes 0>;
+			max-frame-size = <13942>;
+		};
+
+		port4: port@4 {
+			reg = <4>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy4>;
+			phy-mode = "qsgmii";
+			port-name = "eth10";
+			phys = <&serdes 1>;
+			max-frame-size = <13942>;
+		};
+
+		port5: port@5 {
+			reg = <5>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy5>;
+			phy-mode = "qsgmii";
+			port-name = "eth9";
+			phys = <&serdes 1>;
+			max-frame-size = <13942>;
+		};
+
+		port6: port@6 {
+			reg = <6>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy6>;
+			phy-mode = "qsgmii";
+			port-name = "eth12";
+			phys = <&serdes 1>;
+			max-frame-size = <13942>;
+		};
+
+		port7: port@7 {
+			reg = <7>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy7>;
+			phy-mode = "qsgmii";
+			port-name = "eth11";
+			phys = <&serdes 1>;
+			max-frame-size = <13942>;
+		};
+
+		port8: port@8 {
+			reg = <8>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy16>;
+			phy-mode = "qsgmii";
+			port-name = "eth6";
+			phys = <&serdes 2>;
+			max-frame-size = <13942>;
+		};
+
+		port9: port@9 {
+			reg = <9>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy17>;
+			phy-mode = "qsgmii";
+			port-name = "eth5";
+			phys = <&serdes 2>;
+			max-frame-size = <13942>;
+		};
+
+		port10: port@10 {
+			reg = <10>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy18>;
+			phy-mode = "qsgmii";
+			port-name = "eth8";
+			phys = <&serdes 2>;
+			max-frame-size = <13942>;
+		};
+
+		port11: port@11 {
+			reg = <11>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy19>;
+			phy-mode = "qsgmii";
+			port-name = "eth7";
+			phys = <&serdes 2>;
+			max-frame-size = <13942>;
+		};
+
+		port12: port@12 {
+			reg = <12>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy12>;
+			phy-mode = "qsgmii";
+			port-name = "eth2";
+			phys = <&serdes 3>;
+			max-frame-size = <13942>;
+		};
+
+		port13: port@13 {
+			reg = <13>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy13>;
+			phy-mode = "qsgmii";
+			port-name = "eth1";
+			phys = <&serdes 3>;
+			max-frame-size = <13942>;
+		};
+
+		port14: port@14 {
+			reg = <14>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy14>;
+			phy-mode = "qsgmii";
+			port-name = "eth4";
+			phys = <&serdes 3>;
+			max-frame-size = <13942>;
+		};
+
+		port15: port@15 {
+			reg = <15>;
+			microchip,bandwidth = <1000>;
+			phy-handle = <&phy15>;
+			phy-mode = "qsgmii";
+			port-name = "eth3";
+			phys = <&serdes 3>;
+			max-frame-size = <13942>;
+		};
+
+		port16: port@16 {
+			reg = <16>;
+			microchip,bandwidth = <10000>;
+			phys = <&serdes 4>;
+			phy-mode = "10gbase-r";
+			port-name = "sfp0";
+			sfp = <&sfp0>;
+			microchip,sd-sgpio = <24>;
+			managed = "in-band-status";
+		};
+
+		port20: port@20 {
+			reg = <20>;
+			microchip,bandwidth = <10000>;
+			phys = <&serdes 5>;
+			phy-mode = "10gbase-r";
+			port-name = "sfp1";
+			sfp = <&sfp1>;
+			microchip,sd-sgpio = <28>;
+			managed = "in-band-status";
+		};
+	};
+};
