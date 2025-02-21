@@ -22,21 +22,29 @@
         #size-cells = <0>;
 
         ads1015@48 {
-                compatible = "ti,ads1015";
+                compatible = "ti,ads1115";
                 reg = <0x48>;
                 #address-cells = <1>;
                 #size-cells = <0>;
 
                 channel@4 {
                         reg = <4>;
+                        ti,gain = <1>;
+                        ti,datarate = <0>;
                 };
                 channel@5 {
                         reg = <5>;
+                        ti,gain = <1>;
+                        ti,datarate = <0>;
                 };
                 channel@6 {
                         reg = <6>;
+                        ti,gain = <1>;
+                        ti,datarate = <0>;
                 };
                 channel@7 {
+                        ti,gain = <1>;
+                        ti,datarate = <0>;
                         reg = <7>;
                 };
         };
