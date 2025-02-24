@@ -628,18 +628,27 @@ static int max5980_probe(struct i2c_client *client, const struct i2c_device_id *
 	ddata = devm_kzalloc(dev, sizeof(struct max5980_data), GFP_KERNEL);
 	if (ddata == NULL)
 		return -ENOMEM;
-	res = sysfs_create_group(&dev->kobj, &max5980_attr_group);
-	if (res) {
-		dev_err(dev, "failed to create sysfs attributes\n");
-		devm_kfree(&client->dev, ddata);
-		return res;	
-	}
+
 	ddata->client = client;
 	i2c_set_clientdata(client, ddata);
 	dev_set_drvdata(dev, ddata);
 	pdata = &ddata->pdata;
 	res = max5980_of_probe(dev, pdata);
 	max5980_apply_dt_defaults(dev);
+
+	res = max5980_read_reg(ddata, MAX5980_ID_REG) >> 3;
+	if (res != 0x1A) {
+		dev_err(dev, "Unknown device on bus\n");
+		devm_kfree(&client->dev, ddata);
+		return -EINVAL;
+	}
+
+	res = sysfs_create_group(&dev->kobj, &max5980_attr_group);
+	if (res) {
+		dev_err(dev, "failed to create sysfs attributes\n");
+		devm_kfree(&client->dev, ddata);
+		return res;
+	}
 
 	dev_info(dev, "MAX5980 ID 0x%x, rev. number %u, fw %u",
 			max5980_read_reg(ddata, MAX5980_DEV_ID_REV_NUM_REG) >> 5 & 0x7,
@@ -664,6 +673,9 @@ static int max5980_probe(struct i2c_client *client, const struct i2c_device_id *
 	} else {
 		dev_info(dev, "There is no irq gpio");
 	}
+
+	dev_info(dev, "Probed successfully");
+
 	return 0;
 }
 

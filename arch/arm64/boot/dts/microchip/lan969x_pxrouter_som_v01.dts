@@ -573,6 +573,7 @@
 			sfp = <&sfp0>;
 			microchip,sd-sgpio = <24>;
 			managed = "in-band-status";
+			max-frame-size = <13942>;
 		};
 
 		port20: port@20 {
@@ -584,6 +585,7 @@
 			sfp = <&sfp1>;
 			microchip,sd-sgpio = <28>;
 			managed = "in-band-status";
+			max-frame-size = <13942>;
 		};
 	};
 };
